@@ -312,18 +312,107 @@ DEFAULT_REFINE_TABLE_CONTEXT_PROMPT = PromptTemplate(
 ############################################
 
 DEFAULT_KG_TRIPLET_EXTRACT_TMPL = (
-    "Some text is provided below. Given the text, extract up to "
-    "{max_knowledge_triplets} "
+    "A dict is provided below. Given the dic, extract all triplets.
     "knowledge triplets in the form of (subject, predicate, object). Avoid stopwords.\n"
     "---------------------\n"
     "Example:"
-    "Text: Alice is Bob's mother."
-    "Triplets:\n(Alice, is mother of, Bob)\n"
-    "Text: Philz is a coffee shop founded in Berkeley in 1982.\n"
-    "Triplets:\n"
-    "(Philz, is, coffee shop)\n"
-    "(Philz, founded in, Berkeley)\n"
-    "(Philz, founded in, 1982)\n"
+    """dict: {
+    "session_id": "23156a00-0210-4d2d-8024-e7c237896bdf",
+    "case_id": "a0488420-d178-46ce-8881-b50036c22439",
+    "file_name": "8756139351122383-6875680616533115-8145040284517939-8214797221484795-1 4318408089734167-INV_0055661635.PDF",
+    "number_of_pages": 5,
+    "message_queue_outputs": {
+        "0": {
+            "items": {
+                "shipper_name": "Montblanc-Simplo GmbH",
+                "shipper_address": "Postfach 54 03 40 \u00b7 D-22503 Hamburg",
+            },
+            "line_items": [
+                {
+                    "item_code": "118994",
+                    "order_number": "6020583686 dated 08/14/2023 70741094",
+                    "item_description": "2x Fine Stationery Notebook Medium\nlined",
+                    "hs_code": "48201030",
+                    "item_quantity": "2",
+                    "item_unit": "pc",
+                    "country_of_origin": "Italy",
+                    "item_amount": "12.58",
+                    "item_total_amount": "25.16",
+                    "item_delivery_note": "5002120666 dated 08/30/2023",
+                    "item_reference": "MB118994",
+                    "item_weight_unit": "missing"
+                },
+                {
+                    "item_code": "116052",
+                    "order_number": "6020663844 dated 08/23/2023 70744227",
+                    "item_description": "2 x Notebook#146 Slim, black, lined",
+                    "hs_code": "48201030",
+                    "item_quantity": "14",
+                    "item_unit": "pc",
+                    "country_of_origin": "Italy",
+                    "item_amount": "12.58",
+                    "item_total_amount": "176.12",
+                    "item_delivery_note": "5002123720 dated 08/30/2023",
+                    "item_reference": "MB116052",
+                    "item_weight_unit": "missing"
+                },
+                {
+                    "item_code": "118993",
+                    "order_number": "missing",
+                    "item_description": "2x Fine Stationery Notebook Medium\nlined",
+                    "hs_code": "48201030",
+                    "item_quantity": "8",
+                    "item_unit": "pc",
+                    "country_of_origin": "Italy",
+                    "item_amount": "12.58",
+                    "item_total_amount": "100.64",
+                    "item_delivery_note": "missing",
+                    "item_reference": "MB118993",
+                    "item_weight_unit": "missing"
+                },
+                {
+                    "item_code": "116052",
+                    "order_number": "missing",
+                    "item_description": "2 x Notebook#146 Slim, black, lined",
+                    "hs_code": "48201030",
+                    "item_quantity": "4",
+                    "item_unit": "pc",
+                    "country_of_origin": "Italy",
+                    "item_amount": "12.58",
+                    "item_total_amount": "50.32",
+                    "item_delivery_note": "missing",
+                    "item_reference": "MB116052",
+                    "item_weight_unit": "missing"
+                },
+                {
+                    "item_code": "116521",
+                    "order_number": "missing",
+                    "item_description": "STA NOTEBOOK #146 Red, lined",
+                    "hs_code": "48201030",
+                    "item_quantity": "10",
+                    "item_unit": "pc",
+                    "country_of_origin": "Italy",
+                    "item_amount": "14.51",
+                    "item_total_amount": "145.10",
+                    "item_delivery_note": "missing",
+                    "item_reference": "MB116521",
+                    "item_weight_unit": "missing"
+                }
+            ]
+        }""" 
+    "Triplets:\n(a0488420-d178-46ce-8881-b50036c22439, has_shipper_name, Montblanc-Simplo GmbH)\n"
+        "(a0488420-d178-46ce-8881-b50036c22439,has_shipper_address, Postfach 54 03 40 \u00b7 D-22503 Hamburg)\n"
+    "if other items are under items: then they should be connected similar to above\n"
+    "Next extract line_items\n"
+    "(a0488420-d178-46ce-8881-b50036c22439,has_item_code, 118994)\n"
+    "(118994,has_order_number, 6020583686 dated 08/14/2023 70741094)\n"
+    "(118994,has_hs_code, 48201030)\n"
+    "Same for other items in 118994\n"
+    "(a0488420-d178-46ce-8881-b50036c22439,has_item_code, 116052)\n"
+    "(116052,has_order_number, 6020663844 dated 08/23/2023 70744227)\n"
+    "(116052,has_hs_code, 48201030)\n"
+    "Same for other items in 116052\n"
+    "Same for other line items\n"
     "---------------------\n"
     "Text: {text}\n"
     "Triplets:\n"
