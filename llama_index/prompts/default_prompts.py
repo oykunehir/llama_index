@@ -312,7 +312,7 @@ DEFAULT_REFINE_TABLE_CONTEXT_PROMPT = PromptTemplate(
 ############################################
 
 DEFAULT_KG_TRIPLET_EXTRACT_TMPL = (
-    "A dict is provided below. Given the dic, extract all triplets.
+    "A dict is provided below. Given the dic, extract all triplets.\n"
     "knowledge triplets in the form of (subject, predicate, object). Avoid stopwords.\n"
     "---------------------\n"
     "Example:"
