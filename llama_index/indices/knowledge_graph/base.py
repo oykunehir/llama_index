@@ -221,6 +221,7 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
             triplet (str): Knowledge triplet
 
         """
+        print("triplet", triplet)
         self._graph_store.upsert_triplet(*triplet)
 
     def add_node(self, keywords: List[str], node: BaseNode) -> None:
