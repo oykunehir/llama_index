@@ -362,7 +362,7 @@ DEFAULT_KG_TRIPLET_EXTRACT_TMPL = (
     "Same for other items in 116052\n"
     "Same for other line items\n"
     "---------------------\n"
-    "Text: {{text}}\n"
+    "Text: {text}\n"
     "Triplets:\n"
 )
 DEFAULT_KG_TRIPLET_EXTRACT_PROMPT = PromptTemplate(
