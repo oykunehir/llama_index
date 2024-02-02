@@ -215,7 +215,7 @@ class LLMPredictor(BaseLLMPredictor):
     ) -> str:
         """Predict."""
         self._log_template_data(prompt, **prompt_args)
-
+        print("recivied",BasePromptTemplate)
         if output_cls is not None:
             output = self._run_program(output_cls, prompt, **prompt_args)
         elif self._llm.metadata.is_chat_model:
