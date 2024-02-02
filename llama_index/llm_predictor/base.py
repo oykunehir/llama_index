@@ -221,11 +221,13 @@ class LLMPredictor(BaseLLMPredictor):
         elif self._llm.metadata.is_chat_model:
             messages = prompt.format_messages(llm=self._llm, **prompt_args)
             messages = self._extend_messages(messages)
+            print('messages', messages)
             chat_response = self._llm.chat(messages)
             output = chat_response.message.content or ""
         else:
             formatted_prompt = prompt.format(llm=self._llm, **prompt_args)
             formatted_prompt = self._extend_prompt(formatted_prompt)
+            print('formatted_prompt', formatted_prompt)
             response = self._llm.complete(formatted_prompt)
             output = response.text
 
