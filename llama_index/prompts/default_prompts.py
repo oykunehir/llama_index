@@ -357,7 +357,7 @@ DEFAULT_KG_TRIPLET_EXTRACT_TMPL = (
     "Continue in the same manner for other attributes of item 116052,\n"
     "Repeat for other line items.\n"
     "---------------------\n"
-    "Text: {text}\n"
+    "Text: '{text}'\n"
     "Triplets:\n"
 )
 DEFAULT_KG_TRIPLET_EXTRACT_PROMPT = PromptTemplate(
