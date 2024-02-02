@@ -168,6 +168,7 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
             nodes, self._show_progress, "Processing nodes"
         )
         for n in nodes_with_progress:
+            print(type(n))
             triplets = self._extract_triplets(
                 n.get_content(metadata_mode=MetadataMode.LLM)
             )
