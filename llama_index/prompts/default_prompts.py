@@ -318,7 +318,6 @@ DEFAULT_KG_TRIPLET_EXTRACT_TMPL = (
     "Example:"
     """dict: {
     "case_id": "a0488420-d178-46ce-8881-b50036c22439",
-
     "userAnnotation": {
             "items": {
                 "shipper_name": "Montblanc-Simplo GmbH",
