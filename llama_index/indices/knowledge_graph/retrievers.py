@@ -155,7 +155,7 @@ class KGTableRetriever(BaseRetriever):
         node_visited = set()
         keywords = self._get_keywords(query_bundle.query_str)
         if self._verbose:
-            print_text(f"Extracted keywords: {keywords}\n", color="green")
+            print_text(f"Extracted keywords xx: {keywords}\n", color="green")
         rel_texts = []
         cur_rel_map = {}
         chunk_indices_count: Dict[str, int] = defaultdict(int)

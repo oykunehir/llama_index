@@ -92,7 +92,7 @@ class BaseKeywordTableRetriever(BaseRetriever):
         # go through text chunks in order of most matching keywords
         chunk_indices_count: Dict[str, int] = defaultdict(int)
         keywords = [k for k in keywords if k in self._index_struct.keywords]
-        logger.info(f"> Extracted keywords: {keywords}")
+        logger.info(f"> Extracted keywords xx: {keywords}")
         for k in keywords:
             for node_id in self._index_struct.table[k]:
                 chunk_indices_count[node_id] += 1
