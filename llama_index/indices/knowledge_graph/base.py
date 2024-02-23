@@ -20,7 +20,7 @@ from llama_index.service_context import ServiceContext
 from llama_index.storage.docstore.types import RefDocInfo
 from llama_index.storage.storage_context import StorageContext
 from llama_index.utils import get_tqdm_iterable
-
+import json
 logger = logging.getLogger(__name__)
 
 
@@ -168,9 +168,36 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
             nodes, self._show_progress, "Processing nodes"
         )
         for n in nodes_with_progress:
-            triplets = self._extract_triplets(
-                n.get_content(metadata_mode=MetadataMode.LLM)
-            )
+            #triplets = self._extract_triplets(
+            text =  n.get_content(metadata_mode=MetadataMode.LLM)
+            print(text)
+            json_start = text.find('{')
+
+            # Extract the JSON string
+            json_str = text[json_start:]
+            print(json_str)
+            # Load the JSON string into a dictionary
+            data_dict = json.loads(json_str)
+            print(data_dict)
+            #
+            triplets = []
+            # Create nodes and relationships for items
+            case_id = data_dict['case_id']
+            ua=data_dict["userAnnotation"]
+            items = ua["items"]
+            for key, value in items.items():
+                    triplets.append((case_id, "HAS_" + key.upper(), value))
+
+            line_items = ua["line_items"]
+            for line_item in line_items:
+                    item_code = line_item["item_code"]
+                    
+                    triplets.append((case_id, "HAS_ITEM_CODE", item_code))
+
+                    for line_item_key, line_item_value in line_item.items():
+                        if line_item_key != "item_code":
+                            triplets.append((item_code, "HAS_" + line_item_key.upper(), line_item_value))
+            
             logger.debug(f"> Extracted triplets: {triplets}")
             for triplet in triplets:
                 subj, _, obj = triplet

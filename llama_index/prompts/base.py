@@ -188,7 +188,7 @@ class PromptTemplate(BasePromptTemplate):
             **self.kwargs,
             **kwargs,
         }
-
+        print(all_kwargs)
         mapped_all_kwargs = self._map_all_vars(all_kwargs)
         prompt = self.template.format(**mapped_all_kwargs)
 
