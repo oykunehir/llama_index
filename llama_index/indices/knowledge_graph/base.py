@@ -215,8 +215,7 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
                     input=triplet_texts,
                     model="text-embedding-3-small"
                 )
-                resp = openai.Embedding.create(engine='text-embedding-ada-002', input=triplet_texts)
-                emb1 = resp.data[0].embedding 
+                emb1 = response.data[0].embedding 
                 #vectors.append((f"vec{tr_i}", emb1, {"subject": tr}))
                 upsert_response = index.upsert(vectors=[
                             (f"vec{tr_i}", emb1, {"subject": tr})]
