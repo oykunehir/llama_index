@@ -205,15 +205,15 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
             for tr_i,tr in enumerate(triplets):
                 triplet_texts = f"{tr}"
                 #print('sub', triplet_texts)
-                embed_model = self._service_context.embed_model
-                embed_outputs = embed_model.get_text_embedding_batch(
-                    triplet_texts, show_progress=self._show_progress
-                )
-                vectors.append((f"vec{tr_i}", embed_outputs[0], {"subject": tr}))
-
+                #embed_model = self._service_context.embed_model
+                emb1 = openai.Embedding.create(engine='text-embedding-ada-002', input=triplet_texts)["data"][0]["embedding"]
+                #vectors.append((f"vec{tr_i}", emb1, {"subject": tr}))
+                upsert_response = index.upsert(vectors=[
+                            (f"vec{tr_i}", emb1, {"subject": tr})]
+                                              )
             logger.debug(f"vectors: {vectors}")
-            upsert_response = pincone_index.upsert(
-                    vectors=vectors)
+
+
             for triplet in triplets:
                 subj, _, obj = triplet
                 self.upsert_triplet(triplet)
