@@ -5,6 +5,7 @@ Build a KG by extracting triplets, and leveraging the KG during query-time.
 """
 
 import logging
+import openai
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 from llama_index.constants import GRAPH_STORE_KEY
 from llama_index.core.base_retriever import BaseRetriever
