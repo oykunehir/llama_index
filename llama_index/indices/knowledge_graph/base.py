@@ -5,7 +5,8 @@ Build a KG by extracting triplets, and leveraging the KG during query-time.
 """
 
 import logging
-import openai
+from openai import OpenAI
+
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 from llama_index.constants import GRAPH_STORE_KEY
 from llama_index.core.base_retriever import BaseRetriever
@@ -203,11 +204,19 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
             
             #logger.debug(f"> Extracted triplets: {triplets}")
             vectors = []
+            client = OpenAI()
             for tr_i,tr in enumerate(triplets):
                 triplet_texts = f"{tr}"
                 #print('sub', triplet_texts)
                 #embed_model = self._service_context.embed_model
-                emb1 = openai.Embedding.create(engine='text-embedding-ada-002', input=triplet_texts)["data"][0]["embedding"]
+                
+
+                response = client.embeddings.create(
+                    input=triplet_texts,
+                    model="text-embedding-3-small"
+                )
+                resp = openai.Embedding.create(engine='text-embedding-ada-002', input=triplet_texts)
+                emb1 = resp.data[0].embedding 
                 #vectors.append((f"vec{tr_i}", emb1, {"subject": tr}))
                 upsert_response = index.upsert(vectors=[
                             (f"vec{tr_i}", emb1, {"subject": tr})]
