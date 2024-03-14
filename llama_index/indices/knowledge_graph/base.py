@@ -209,8 +209,8 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
                 embed_outputs = embed_model.get_text_embedding_batch(
                     triplet_texts, show_progress=self._show_progress
                 )
-                vectors.append((f"vec{tr_i}", embed_outputs, {"subject": tr}))
-            print("vectors", vectors)
+                vectors.append((f"vec{tr_i}", embed_outputs[0], {"subject": tr}))
+            logger.debug(f"vectors: {vectors}")
             upsert_response = pincone_index.upsert(
                     vectors=vectors,
                     namespace="dexter"
