@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 from pinecone import Pinecone
 
 pc = Pinecone(api_key="c6c12059-8962-4480-bd78-ebc90d0dc043")
-pincone_index = pc.Index(host="dexterkg")
+pincone_index = pc.Index(name="dexterkg")
 
 class KnowledgeGraphIndex(BaseIndex[KG]):
     """Knowledge Graph Index.
