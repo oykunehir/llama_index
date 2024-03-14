@@ -6,7 +6,6 @@ Build a KG by extracting triplets, and leveraging the KG during query-time.
 
 import logging
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
-
 from llama_index.constants import GRAPH_STORE_KEY
 from llama_index.core.base_retriever import BaseRetriever
 from llama_index.data_structs.data_structs import KG
@@ -22,7 +21,10 @@ from llama_index.storage.storage_context import StorageContext
 from llama_index.utils import get_tqdm_iterable
 import json
 logger = logging.getLogger(__name__)
+from pinecone import Pinecone
 
+pc = Pinecone(api_key="c6c12059-8962-4480-bd78-ebc90d0dc043")
+pincone_index = pc.Index(host="dexterkg")
 
 class KnowledgeGraphIndex(BaseIndex[KG]):
     """Knowledge Graph Index.
@@ -109,7 +111,7 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
         )
 
         if len(self.index_struct.embedding_dict) > 0 and "retriever_mode" not in kwargs:
-            kwargs["retriever_mode"] = KGRetrieverMode.HYBRID
+            kwargs["retriever_mode"] = KGRetrieverMode.EMBEDDING
 
         return KGTableRetriever(self, object_map=self._object_map, **kwargs)
 
@@ -199,6 +201,17 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
                             triplets.append((item_code, "HAS_" + line_item_key.upper(), line_item_value))
             
             logger.debug(f"> Extracted triplets: {triplets}")
+            vectors = []
+            for tr_i,tr in enumerate(triplets):
+                triplet_texts = f"{tr}"
+                embed_outputs = embed_model.get_text_embedding_batch(
+                    triplet_texts, show_progress=self._show_progress
+                )
+                vectors.append((f"vec{tr_i}", embed_outputs, {"subject": tr}))
+            upsert_response = pincone_index.upsert(
+                    vectors=vectors,
+                    namespace="dexter"
+            )
             for triplet in triplets:
                 subj, _, obj = triplet
                 self.upsert_triplet(triplet)
@@ -206,11 +219,14 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
 
             if self.include_embeddings:
                 triplet_texts = [str(t) for t in triplets]
+                print("geerating", triplet_texts)
 
                 embed_model = self._service_context.embed_model
                 embed_outputs = embed_model.get_text_embedding_batch(
                     triplet_texts, show_progress=self._show_progress
                 )
+                print("embeeding", embed_outputs)
+
                 for rel_text, rel_embed in zip(triplet_texts, embed_outputs):
                     index_struct.add_to_embedding_dict(rel_text, rel_embed)
 
