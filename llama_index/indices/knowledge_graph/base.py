@@ -200,16 +200,17 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
                         if line_item_key != "item_code":
                             triplets.append((item_code, "HAS_" + line_item_key.upper(), line_item_value))
             
-            logger.debug(f"> Extracted triplets: {triplets}")
+            #logger.debug(f"> Extracted triplets: {triplets}")
             vectors = []
             for tr_i,tr in enumerate(triplets):
                 triplet_texts = f"{tr}"
-                print('sub', triplet_texts)
+                #print('sub', triplet_texts)
                 embed_model = self._service_context.embed_model
                 embed_outputs = embed_model.get_text_embedding_batch(
                     triplet_texts, show_progress=self._show_progress
                 )
                 vectors.append((f"vec{tr_i}", embed_outputs, {"subject": tr}))
+            print("vectors", vectors)
             upsert_response = pincone_index.upsert(
                     vectors=vectors,
                     namespace="dexter"
