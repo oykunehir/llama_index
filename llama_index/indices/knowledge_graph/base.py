@@ -218,7 +218,7 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
                 emb1 = response.data[0].embedding 
                 #vectors.append((f"vec{tr_i}", emb1, {"subject": tr}))
                 upsert_response = pincone_index.upsert(vectors=[
-                            (f"vec{tr_i}", emb1, {"subject": f"{tr}")]
+                            (f"vec{tr_i}", emb1, {"subject": f"{tr}"})]
                                               )
             logger.debug(f"vectors: {vectors}")
 
