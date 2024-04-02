@@ -192,7 +192,7 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
 
             #ADD CLIENT TO DOCUMENT TYPE
             document_type = 'Export Declaration'
-            client_id = 0
+            client_id = "TEST CLIENT"
             triplets.append((document_type, "HAS_CLIENT" , client_id))
 
             shipper_vat_number = items.get('shipper_vat_number','')
