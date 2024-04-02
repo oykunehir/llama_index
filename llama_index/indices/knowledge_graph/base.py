@@ -22,9 +22,9 @@ from llama_index.storage.docstore.types import RefDocInfo
 from llama_index.storage.storage_context import StorageContext
 from llama_index.utils import get_tqdm_iterable
 import json
+
 logger = logging.getLogger(__name__)
 from pinecone import Pinecone
-
 pc = Pinecone(api_key="c6c12059-8962-4480-bd78-ebc90d0dc043")
 pincone_index = pc.Index(name="dexterkg")
 
@@ -189,6 +189,39 @@ class KnowledgeGraphIndex(BaseIndex[KG]):
             case_id = data_dict['case_id']
             ua=data_dict["userAnnotation"]
             items = ua["items"]
+
+            #ADD CLIENT TO DOCUMENT TYPE
+            document_type = 'Export Declaration'
+            client_id = 0
+            triplets.append((document_type, "HAS_CLIENT" , client_id))
+
+            shipper_vat_number = items.get('shipper_vat_number','')
+            applicant_vat_number = items.get('applicant_vat_number','')
+            recipient_vat_number = items.get('recipient_vat_number','')
+            export_customs_office_number = items.get('export_customs_office_number','')
+
+            if shipper_vat_number != '': triplets.append((client_id, "HAS_SHIPPER", shipper_vat_number))
+            if applicant_vat_number != '': triplets.append((client_id, "HAS_APPLICANT", applicant_vat_number))
+            if recipient_vat_number != '': triplets.append((client_id, "HAS_RECIPIENT", recipient_vat_number))
+            if export_customs_office_number != '': triplets.append((client_id, "HAS_CUSTOMS_OFFICE", export_customs_office_number))
+
+            for key, value in items.items():
+                if 'shipper' in key:
+                    if shipper_vat_number != '':
+                        triplets.append((shipper_vat_number, "HAS_" + key.upper(), value))
+                elif 'recipient' in key:
+                    if recipient_vat_number != '':
+                        triplets.append((recipient_vat_number, "HAS_" + key.upper(), value))
+                elif 'applicant' in key:
+                    if applicant_vat_number != '':
+                        triplets.append((applicant_vat_number, "HAS_" + key.upper(), value))
+                elif 'export_customs_office' in key:
+                    if export_customs_office_number != '':
+                        triplets.append((export_customs_office_number, "HAS_" + key.upper(), value))
+                else:
+                    triplets.append((case_id, "HAS_" + key.upper(), value))
+
+
             for key, value in items.items():
                     triplets.append((case_id, "HAS_" + key.upper(), value))
 
